@@ -58,42 +58,7 @@ if( isset($wp_query->query_vars['pid']) ) {
           <div class="clearfix" style="margin-bottom: 20px;">
             <a href="<?php echo get_the_author_meta( 'user_url', $post->post_author ); ?>"><strong><?php echo get_the_author_meta( 'display_name', $post->post_author ); ?></strong></a> 的作品
           </div>
-          <div class="demo-list">
-            <div class="row active">
-            <?php
-                $query = new WP_Query( array(
-                  'author' => $post->post_author
-                ));
-                $posts = $query->posts;
-              ?>
-            <?php foreach($posts as $k => $p) : ?>
-              <div class="col-xs-6 col-sm-3">
-                <div class="template-item <?php if ($p->ID == $pid) echo 'active';?>" data-slug="<?php echo get_demo_link($p->ID); ?>">
-                  <a class="demo-link" href="<?php echo get_demo_link($p->ID); ?>" data-demosrc="<?php echo get_demo_src_link($p->ID); ?>" data-dlsrc="<?php echo get_download_src_link($p->ID); ?>">
-                    <h3 class="template-title"><?php echo $p->post_title; ?></h3>
-                  </a>
-                  <div class="template">
-                    <a class="demo-link" href="<?php echo get_demo_link($p->ID); ?>" data-demosrc="<?php echo get_demo_src_link($p->ID); ?>" data-dlsrc="<?php echo get_download_src_link($p->ID); ?>">
-                      <?php post_thumbnail_image($p->ID); ?>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <?php endforeach; ?>
-            </div>
-          </div>
-
-          <div class="controls">
-            <ul>
-              <li class="control-nav prev"><a href="#"><i class="fa fa-angle-left"></i></a></li>
-              <li class="hidden-xs active" data-index="1"><a href="#">1</a></li>
-              <li class="hidden-xs" data-index="2"><a href="#">2</a></li>
-              <li class="hidden-xs" data-index="3"><a href="#">3</a></li>
-              <li class="hidden-xs" data-index="4"><a href="#">4</a></li>
-              <li class="control-nav next"><a href="#"><i class="fa fa-angle-right"></i></a></li>
-            </ul>
-          </div>
-
+          <?php preview_demo_posts($pid); ?>
         </div>
       </div>
     </div>

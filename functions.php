@@ -16,33 +16,31 @@ function include_scripts_styles() {
   wp_register_style( 'template', get_template_directory_uri() . '/template.css' );
   wp_register_style( 'font-awesome', get_template_directory_uri() . '/css/font-awesome.min.css' );
   wp_register_style( 'preview', get_template_directory_uri() . '/css/preview.css' );
+  wp_register_style( 'sppagebuilder', get_template_directory_uri() . '/css/sppagebuilder.css' );
 
   //wp_register_style( 'bootstrap-theme', '//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css' );
   //wp_register_style( 'bootstrap', '//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css' );
   //wp_register_script( 'bootstrap', '//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js' );
+  wp_enqueue_script( 'jquery' );
+  wp_enqueue_script( 'bootstrap' );
 
-  if (!is_page('demo')) {
-    wp_enqueue_script( 'jquery' );
-    wp_enqueue_script( 'bootstrap' );
-    wp_enqueue_script( 'main' );
+  wp_enqueue_style( 'bootstrap-theme' );
+  wp_enqueue_style( 'bootstrap' );
+  wp_enqueue_style( 'font-awesome' );
 
-    wp_enqueue_style( 'bootstrap-theme' );
-    wp_enqueue_style( 'bootstrap' );
-    wp_enqueue_style( 'template' );
-    wp_enqueue_style( 'font-awesome' );
-    wp_enqueue_style( 'style' );
-  } else {
-    wp_enqueue_script( 'jquery' );
-    wp_enqueue_script( 'bootstrap' );
+
+  if (is_home()) {
+    wp_enqueue_style( 'sppagebuilder' );
+  }
+  if (is_page('demo')) {
     wp_enqueue_script( 'preview' );
-
-    wp_enqueue_style( 'bootstrap-theme' );
-    wp_enqueue_style( 'bootstrap' );
-    wp_enqueue_style( 'font-awesome' );
     wp_enqueue_style( 'preview' );
-    wp_enqueue_style( 'style' );
+  } else {
+    wp_enqueue_script( 'main' );
+    wp_enqueue_style( 'template' );
   }
 
+  wp_enqueue_style( 'style' );
 }
 endif;
 add_action( 'wp_enqueue_scripts', 'include_scripts_styles' );
@@ -246,4 +244,74 @@ function post_thumbnail_image($post_id) {
     $img_url = $img_urls[0];
   }
   echo '<img class="img-responsive" src="' . $img_url . '" data-src="' . $img_url . '" alt="' . $post_title . '">';
+}
+
+function preview_demo_posts($post_id) {
+  echo '<div class="demo-list">';
+  $query = new WP_Query( array(
+    'author' => $post->post_author
+  ));
+  $posts = $query->posts;
+  $size = sizeof($posts);
+
+  $active_page = 1;
+  if ($size > 0) {
+    for ($n = 1; $n <= $size; $n++) {
+      $post = $posts[$n - 1];
+      if ($post_id == $post->ID) {
+        $active_page = ceil($n / 4);
+        break;
+      }
+    }
+  }
+
+  if ($size > 0) {
+    $page = ceil($size / 4);
+    for ($i = 0; $i < $page; $i++) {
+      echo '<div class="row';
+      if ($i == ($active_page - 1)) {
+         echo ' active';
+      }
+      echo '">';
+        for ($j = 0; $j < 4; $j++) {
+          $index = $i * 4 + $j;
+          if ($index < $size) {
+            $p = $posts[$index];
+            $pid = $p->ID;
+            $demo_link = get_demo_link($pid);
+            $demo_src_link = get_demo_src_link($pid);
+            $download_src_link = get_download_src_link($pid);
+            echo '<div class="col-xs-6 col-sm-3">';
+            echo '<div class="template-item';
+            if ($pid == $post_id) {
+              echo ' active';
+            }
+            echo '" data-slug="' . $demo_link . '">';
+            echo '<a class="demo-link" href="' . $demo_link . '" data-demosrc="' . $demo_src_link . '" data-dlsrc="' . $download_src_link . '">';
+            echo '<h3 class="template-title">' . $p->post_title . '</h3>';
+            echo '</a>';
+            echo '<div class="template">';
+            echo '<a class="demo-link" href="' . $demo_link . '>" data-demosrc="' . $demo_src_link . '" data-dlsrc="' . $download_src_link . '">';
+            post_thumbnail_image($pid);
+            echo '</a></div></div></div>';
+          }
+        }
+      echo '</div>';
+    }
+  }
+  echo '</div>';
+
+  if ($size > 0) {
+    echo '<div class="controls"><ul><li class="control-nav prev"><a href="#"><i class="fa fa-angle-left"></i></a></li>';
+    $page = ceil($size / 4);
+    for ($i = 1; $i <= $page; $i++) {
+      echo '<li class="hidden-xs';
+      if ($i == $active_page) {
+        echo ' active';
+      }
+      echo '" data-index="' . $i . '"><a href="#">' . $i . '</a></li>';
+    }
+    echo '<li class="control-nav next"><a href="#"><i class="fa fa-angle-right"></i></a></li>';
+    echo '</ul></div>';
+  }
 }

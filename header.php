@@ -52,16 +52,11 @@
       <div class="row">
         <div id="sp-title" class="col-sm-12 col-md-12">
           <div class="sp-column ">
+            <?php if (!is_home()) : ?>
             <div class="sp-page-title">
               <div class="container">
                 <div class="row">
                   <div class="col-sm-8">
-                    <?php if (is_home()) : ?>
-                      <ol class="breadcrumb">
-                        <li><a href="<?php echo home_url();?>" class="pathway"></a></li>
-                      </ol>
-                      <h2>欢迎光临！Have fun!</h2>
-                    <?php else : ?>
                       <ol class="breadcrumb">
                         <li><a href="<?php echo home_url();?>" class="pathway">首页</a></li>
                         <?php
@@ -77,7 +72,6 @@
                       <?php else : ?>
                         <h2><?php echo get_the_title(); ?></h2>
                       <?php endif; ?>
-                    <?php endif; ?>
                   </div>
                   <div class="col-sm-4">
                     <form class="form-product-search" action="/items" method="get">
@@ -87,6 +81,8 @@
                 </div>
               </div>
             </div>
+            <?php endif; ?>
+
           </div>
         </div>
       </div>
