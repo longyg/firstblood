@@ -1,0 +1,17 @@
+/*
+Theme Name: First Blood
+Theme URI: http://www.xcober.com
+Author: Long Yonggang
+Author URI: http://www.xcober.com
+Description: This is my first theme, call it first blood.
+Version: 0.1
+Tags: one-column, two-column, three-column, left-sidebar, right-sidebar, responsive-layout, custom-background
+Text Domain: firstblood
+*/
+a.category {
+  margin-right:5px;
+}
+
+.sp-dropdown-main {
+  width: 200px !important;
+}
