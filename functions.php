@@ -46,6 +46,16 @@ endif;
 add_action( 'wp_enqueue_scripts', 'include_scripts_styles' );
 show_admin_bar(false);
 
+function my_body_classes($classes) {
+  if (is_home()) {
+    $classes[] = 'site com-sppagebuilder view-page no-layout no-task en-gb ltr sticky-header layout-fluid';
+  } else {
+    $classes[] = 'site com-product view-products no-layout no-task en-gb ltr sticky-header layout-fluid';
+  }
+  return $classes;
+}
+add_filter('body_class','my_body_classes');
+
 if ( ! function_exists('fb_setup') ) :
  /**
   * Sets up theme defaults and registers support for various WordPress features.
@@ -235,6 +245,7 @@ function get_download_src_link($post_id) {
   }
 }
 
+// 显示文章的缩略图
 function post_thumbnail_image($post_id) {
   $post_title = get_post($post_id)->post_title;
   $img_url = get_stylesheet_directory_uri() . '/images/default.png';
@@ -246,6 +257,7 @@ function post_thumbnail_image($post_id) {
   echo '<img class="img-responsive" src="' . $img_url . '" data-src="' . $img_url . '" alt="' . $post_title . '">';
 }
 
+// 在演示页面显示当前演示案例的作者的所有案例
 function preview_demo_posts($post_id) {
   echo '<div class="demo-list">';
   $query = new WP_Query( array(
@@ -314,4 +326,41 @@ function preview_demo_posts($post_id) {
     echo '<li class="control-nav next"><a href="#"><i class="fa fa-angle-right"></i></a></li>';
     echo '</ul></div>';
   }
+}
+
+// 页面面包屑分类导航
+// 目前不支持多级分类
+// 如果文章有多个分类，默认只使用第一个分类进行导航，建议每篇文章归档到唯一分类中
+function breadcrumb_and_page_title() {
+  echo '<ol class="breadcrumb">';
+  echo '<li><a href="' . home_url() .'" class="pathway">首页</a></li>';
+  if (is_category()) {
+    global $wp_query;
+    $cat_id = get_query_var('cat');
+    $category = get_category($cat_id);
+    $cat_title = $category->cat_name;
+    $cat_url = get_category_link($cat_id);
+    echo '<li class="active"><a href="' . $cat_url . '" class="pathway">' . $cat_title . '</a></li>';
+    echo '</ol>';
+    echo '<h2>' . $cat_title . '</h2>';
+  } else if (is_singular()) {
+    $category = get_the_category();
+    $cat_title = $category[0]->cat_name;
+    $cat_id = $category[0]->cat_ID;
+    $cat_url = get_category_link( $cat_id );
+    echo '<li class="active"><a href="' . $cat_url . '" class="pathway">' . $cat_title . '</a></li>';
+    echo '</ol>';
+    echo '<h2>' . get_the_title() . '</h2>';
+  } else {
+    echo '<li class="active"><a href="' . home_url() . '/all-items" class="pathway">所有案例</a></li>';
+    echo '</ol>';
+    echo '<h2>所有特效案例</h2>';
+  }
+}
+
+function my_search_form() {
+  $search_url = get_bloginfo('url') . '/all-items';
+  echo '<form class="form-product-search" action="' . $search_url . '" method="get">';
+  echo '<input class="input-product-search" name="s" placeholder="搜索特效案例..." type="text" value="' . get_search_query() .'"><i class="sb-icon-search"></i>';
+  echo '</form>';
 }

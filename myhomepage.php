@@ -1,3 +1,8 @@
+<?php
+/*
+Template Name: 首页
+*/
+?>  
 <?php get_header(); ?>
 
 <section id="sp-main-body"><div class="row"><div id="sp-component" class="col-sm-12 col-md-12"><div class="sp-column "><div id="system-message-container">
