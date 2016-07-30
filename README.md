@@ -10,6 +10,8 @@ Open issues:
 				$menu_item->classes[] = 'menu-item-has-children';
 		}
 	}
+
+should modify the class name to "sp-has-child"
 	
 	// Add the menu-item-has-children class where applicable
 	if ( $menu_items_with_children ) {
@@ -19,4 +21,4 @@ Open issues:
 		}
 	}
 
-should modify the class name to "sp-has-child"
+
